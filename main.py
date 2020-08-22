@@ -7,18 +7,18 @@ from PyQt5.QtWidgets import QMainWindow, QApplication
 class Salvation(QMainWindow, app.App):
     def __init__(self):
         super().__init__()
+        self.svn = app.svn.Client()
         self.ui = gui.ui.Ui_MainWindow()
         self.ui.setupUi(self)
 
         self.setup_ui()
         self.register_ui_event()
 
-        self.svn = app.svn.Client()
-
     def setup_ui(self):
         self.ui.statusbar.showMessage("[Welcome] Powered by LIU-Yinyi :D")
         self.setup_ui_bundle()
         self.setup_ui_repoconfig()
+        self.setup_ui_remotesvn()
 
     def register_ui_event(self):
         # win_bundlelist
@@ -30,6 +30,8 @@ class Salvation(QMainWindow, app.App):
         self.ui.pushButton_loginKey.clicked.connect(self.event_button_login_by_sshkey)
         self.ui.pushButton_loadKey.clicked.connect(self.event_button_load_sshkey)
         self.ui.lineEdit_address.textChanged.connect(self.event_lineedit_address_onchange)
+        # win_remotesvn
+        self.ui.treeView_remoteSvn.clicked.connect(self.event_remotesvn_treeview_left_click)
 
 
 if __name__ == '__main__':

@@ -51,30 +51,37 @@ def event_load_bundle_config(self):
 
 
 def event_listwidget_repos_menu_add(self):
-    print('add')
+    self.ui.lineEdit_username.setText("")
+    self.ui.lineEdit_address.setText("")
+    self.ui.lineEdit_alias.setText("")
+    self.ui.lineEdit_password.setText("")
+    self.ui.lineEdit_sshkey.setText("")
+    self.ui.checkBox_configssh.setChecked(False)
+    self.ui.lineEdit_username.setFocus()
 
 
 def event_listwidget_repos_menu_edit(self):
     indices = self.ui.listWidget_repos.selectedIndexes()
     if len(indices) > 0:
-        id = indices[0].row()
-        record = self.bundle_db[id]
-        self.ui.lineEdit_alias.setText(record[1])
+        _id = indices[0].row()
+        record = self.bundle_db[_id]
         self.ui.lineEdit_username.setText(record[2])
         self.ui.lineEdit_password.setText(record[3])
         self.ui.lineEdit_sshkey.setText(record[4])
         self.ui.lineEdit_address.setText(record[5])
+        self.ui.lineEdit_alias.setText(record[1])
         self.ui.checkBox_configssh.setChecked(True if record[6] else False)
         if record[3] != "":
             self.ui.tabWidget_login.setCurrentIndex(0)
         else:
             self.ui.tabWidget_login.setCurrentIndex(1)
 
+
 def event_listwidget_repos_menu_delete(self):
     indices = self.ui.listWidget_repos.selectedIndexes()
     if len(indices) > 0:
-        id = indices[0].row()
-        record = self.bundle_db[id]
+        _id = indices[0].row()
+        record = self.bundle_db[_id]
         reply = QMessageBox.question(self, "Confirm Delete", "Username: {}\nAddress: {}".format(record[2], record[5]))
         if reply == QMessageBox.Yes:
             db_bundlelist.delete_bundle(id=record[0], username=record[2], address=record[5])
@@ -85,11 +92,31 @@ def event_listwidget_repos_menu_delete(self):
 
 
 def event_listwidget_repos_menu_duplicate(self):
-    print('duplicate')
+    indices = self.ui.listWidget_repos.selectedIndexes()
+    if len(indices) > 0:
+        _id = indices[0].row()
+        record = self.bundle_db[_id]
+        self.ui.lineEdit_username.setText("")
+        self.ui.lineEdit_username.setFocus()
+        self.ui.lineEdit_password.setText("")
+        self.ui.lineEdit_sshkey.setText("")
+        self.ui.lineEdit_address.setText(record[5])
+        self.ui.lineEdit_alias.setText(record[1])
+        self.ui.checkBox_configssh.setChecked(True if record[6] else False)
+        self.ui.statusbar.showMessage('[Info] Same User will be combined', 5000)
 
 
 def event_listwidget_repos_menu_connect(self):
-    print('connect')
+    indices = self.ui.listWidget_repos.selectedIndexes()
+    if len(indices) > 0:
+        _id = indices[0].row()
+        record = self.bundle_db[_id]
+        self.ui.statusbar.showMessage("[Info] Connecting to {}...".format(record[1]))
+        if self.svn.login(username=record[2], password=record[3], sshkey=record[4], address=record[5]):
+            self.event_remotesvn_connected()
+            self.ui.statusbar.showMessage('[Info] Connected successfully.', 5000)
+        else:
+            self.ui.statusbar.showMessage('[Info] Connection failed.', 5000)
 
 
 def event_listwidget_repos_menu_refresh(self):

@@ -1,7 +1,8 @@
 import os
-import time
+import re
 import pexpect
 from lxml import etree
+from pathlib import Path
 
 
 class Client:
@@ -32,8 +33,11 @@ class Client:
         cmd = ""
         for arg in args:
             cmd += arg + " "
-            res = pexpect.run(cmd.strip())
-            return res
+        res = pexpect.run(cmd.strip())
+        return res
+
+    def auto_auth_config(self):
+        pass
 
     def login(self, **kwargs):
         self._address = kwargs.get("address", self._address)
@@ -44,10 +48,18 @@ class Client:
         self.get_url()
 
         # print(self.get_config())
+        self.auto_auth_config()
         flag = False
 
         if self._sshkey != "":
-            pass
+            _proc = pexpect.spawn('svn', ['list', '--xml', self.get_url()])
+            _index = _proc.expect(['<entry', 'svn: E170013: Unable to connect to a repository at URL', pexpect.EOF, pexpect.TIMEOUT])
+            # print(_proc.before)
+            if _index == 0:
+                flag = True
+                print('have sshkey')
+            elif _index == 1:
+                print('sshkey error')
         elif self._password != "":
             _proc = pexpect.spawn('svn', ['list', '--xml', self.get_url()])
             _index = _proc.expect(['<entry', 'password', pexpect.EOF, pexpect.TIMEOUT])
@@ -77,7 +89,6 @@ class Client:
         path = self.get_url() + '/' + rel_path
         res = list()
         _xml = self._run_command('svn ls --xml', path).strip()
-
         try:
             _par = etree.XML(_xml)
             for entry in _par.iter('entry'):
@@ -98,12 +109,14 @@ class Client:
                     vlist.append(entry.xpath('string(name)') + '/')
                     vlist.append('--')
                 vlist.append('remote')
+                vlist.append(entry.xpath('string(commit/@revision)'))
                 vlist.append(entry.xpath('string(commit/author)').split('@')[0])
                 _date_time = entry.xpath('string(commit/date)')
                 vlist.append('{} {}'.format(_date_time[:10], _date_time[11:19]))
                 res.append(vlist)
-        except:
-            pass
+        except Exception as ex:
+            print('[Warn] unexpected xml format.')
+            print(ex)
         return res
 
     def mkdir(self, rel_path=""):
