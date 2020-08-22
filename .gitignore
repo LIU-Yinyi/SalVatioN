@@ -1,0 +1,5 @@
+cfg/bundle.db
+cfg/local.db
+.DS_Store
+.idea/
+*.pyc

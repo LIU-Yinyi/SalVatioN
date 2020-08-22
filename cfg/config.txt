@@ -1,0 +1,2 @@
+bundle.db -> bundle list for repositories
+local.db -> local storage of repositoriess
