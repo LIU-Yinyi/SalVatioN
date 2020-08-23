@@ -86,7 +86,7 @@ def event_listwidget_repos_menu_delete(self):
         if reply == QMessageBox.Yes:
             db_bundlelist.delete_bundle(id=record[0], username=record[2], address=record[5])
             self.ui.statusbar.showMessage('[Info] Bundle Deleted.', 5000)
-            setup_ui_bundle(self)
+            self.setup_ui_bundle()
         else:
             self.ui.statusbar.showMessage('[Info] Deletion Canceled.', 5000)
 
@@ -112,7 +112,7 @@ def event_listwidget_repos_menu_connect(self):
         _id = indices[0].row()
         record = self.bundle_db[_id]
         self.ui.statusbar.showMessage("[Info] Connecting to {}...".format(record[1]))
-        if self.svn.login(username=record[2], password=record[3], sshkey=record[4], address=record[5]):
+        if self.svn.login(username=record[2], password=record[3], sshkey=record[4], address=record[5], remain=False):
             self.event_remotesvn_connected()
             self.ui.statusbar.showMessage('[Info] Connected successfully.', 5000)
         else:
@@ -120,7 +120,7 @@ def event_listwidget_repos_menu_connect(self):
 
 
 def event_listwidget_repos_menu_refresh(self):
-    setup_ui_bundle(self)
+    self.setup_ui_bundle()
     self.ui.statusbar.showMessage('[Info] Bundle Refreshed.', 5000)
 
 

@@ -36,19 +36,16 @@ class Client:
         res = pexpect.run(cmd.strip())
         return res
 
-    def auto_auth_config(self):
-        pass
-
     def login(self, **kwargs):
-        self._address = kwargs.get("address", self._address)
-        self._username = kwargs.get("username", self._username)
-        self._password = kwargs.get("password", self._password)
-        self._sshkey = kwargs.get("sshkey", self._sshkey)
-        self._url = kwargs.get("url", self._url)
+        _remain = kwargs.get("remain", True) # remain initialization config
+        self._address = kwargs.get("address", self._address if _remain else "")
+        self._username = kwargs.get("username", self._username if _remain else "")
+        self._password = kwargs.get("password", self._password if _remain else "")
+        self._sshkey = kwargs.get("sshkey", self._sshkey if _remain else "")
+        self._url = kwargs.get("url", self._url if _remain else "")
         self.get_url()
 
         # print(self.get_config())
-        self.auto_auth_config()
         flag = False
 
         if self._sshkey != "":
@@ -88,7 +85,23 @@ class Client:
     def list(self, rel_path=""):
         path = self.get_url() + '/' + rel_path
         res = list()
-        _xml = self._run_command('svn ls --xml', path).strip()
+        if self._sshkey != "":
+            _xml = self._run_command('svn ls --xml', path).strip()
+        elif self._password != "":
+            _proc = pexpect.spawn('svn', ['list', '--xml', path])
+            _index = _proc.expect(['password', pexpect.EOF, pexpect.TIMEOUT])
+            if _index == 0:
+                _proc.sendline(self._password)
+                _subindex = _proc.expect(['</lists>', pexpect.EOF, pexpect.TIMEOUT])
+                if _subindex == 0:
+                    _xml = '<list>' + _proc.before.decode('utf-8').lstrip(':').strip()
+                else:
+                    return []
+            else:
+                return []
+        else:
+            return []
+
         try:
             _par = etree.XML(_xml)
             for entry in _par.iter('entry'):

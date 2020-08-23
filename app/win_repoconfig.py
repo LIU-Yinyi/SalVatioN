@@ -47,5 +47,5 @@ def func_login_success_save_config(self):
     cfg['autocfg'] = self.ui.checkBox_configssh.isChecked()
     db_bundlelist.save_bundle(cfg)
     self.ui.statusbar.showMessage('[Info] Connected & Saved.', 5000)
-    self.event_remotesvn_connected()
+    self.setup_ui_bundle()
 

@@ -1,3 +1,4 @@
+import re
 from enum import IntEnum
 from PyQt5.Qt import QStandardItem, QStandardItemModel
 from PyQt5.QtGui import QFont, QColor
@@ -77,7 +78,7 @@ def func_model_get_fullpath(current_index):
 
     full_path = ""
     for each in reversed(path):
-        full_path += '"' + each + '"'
+        full_path += each.replace(" ", "%20").replace("'", "%27").replace('"', "%22")
 
     return full_path
 

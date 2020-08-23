@@ -195,7 +195,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
-        self.tabWidget_login.setCurrentIndex(1)
+        self.tabWidget_login.setCurrentIndex(0)
         self.comboBox_logo.setCurrentIndex(-1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -206,11 +206,11 @@ class Ui_MainWindow(object):
         self.groupBox_login.setTitle(_translate("MainWindow", "Repo Configuration"))
         self.checkBox_configssh.setText(_translate("MainWindow", "Auto-config sshkey"))
         self.label_password.setText(_translate("MainWindow", "Password:"))
-        self.pushButton_loginPassword.setText(_translate("MainWindow", "Connect"))
+        self.pushButton_loginPassword.setText(_translate("MainWindow", "Save"))
         self.tabWidget_login.setTabText(self.tabWidget_login.indexOf(self.tab_password), _translate("MainWindow", "Via Password"))
         self.label_sshkey.setText(_translate("MainWindow", "SSH-Key:"))
         self.pushButton_loadKey.setText(_translate("MainWindow", "Load"))
-        self.pushButton_loginKey.setText(_translate("MainWindow", "Connect"))
+        self.pushButton_loginKey.setText(_translate("MainWindow", "Save"))
         self.tabWidget_login.setTabText(self.tabWidget_login.indexOf(self.tab_sshkey), _translate("MainWindow", "Via SSH-Key"))
         self.label_alias.setText(_translate("MainWindow", "Identifier:"))
         self.label_address.setText(_translate("MainWindow", "Address:"))
