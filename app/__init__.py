@@ -19,6 +19,12 @@ class App:
         event_button_login_by_password, event_button_login_by_sshkey, \
         event_button_load_sshkey, event_lineedit_address_onchange
 
-    from .win_remotesvn import setup_ui_remotesvn, event_remotesvn_model_refresh, \
-        event_remotesvn_treeview_left_click, \
-        event_remotesvn_treeview_render, event_remotesvn_connected
+    from .win_remotesvn import setup_ui_remotesvn, \
+        event_remotesvn_treeview_menu_mkdir, event_remotesvn_treeview_menu_checkout, \
+        event_remotesvn_treeview_menu_delete, event_remotesvn_treeview_menu_list, \
+        event_remotesvn_treeview_menu_rename, event_remotesvn_treeview_menu_move, \
+        event_remotesvn_treeview_menu_refresh, event_remotesvn_model_refresh,\
+        event_remotesvn_treeview_left_click, event_remotesvn_treeview_right_click, \
+        event_remotesvn_treeview_left_double_click, event_remotesvn_connected, \
+        event_remotesvn_treeview_render, event_remotesvn_treeview_update_subdir, \
+        event_remotesvn_treeview_menu_find, event_remotesvn_treeview_menu_expand

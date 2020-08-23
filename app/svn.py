@@ -13,6 +13,7 @@ class Client:
         self._password = kwargs.get("password", "")
         self._sshkey = kwargs.get("sshkey", "")
         self._url = kwargs.get("url", "")
+        self._timeout = kwargs.get("timeout", 10)
 
         if self._url == "" and self._address != "" and self._username != "":
             self._url = "svn+ssh://{}@{}".format(self._username, self._address.rstrip("/"))
@@ -50,7 +51,8 @@ class Client:
 
         if self._sshkey != "":
             _proc = pexpect.spawn('svn', ['list', '--xml', self.get_url()])
-            _index = _proc.expect(['<entry', 'svn: E170013: Unable to connect to a repository at URL', pexpect.EOF, pexpect.TIMEOUT])
+            _index = _proc.expect(['<entry', 'svn: E170013: Unable to connect to a repository at URL',
+                                   pexpect.EOF, pexpect.TIMEOUT], timeout=self._timeout)
             # print(_proc.before)
             if _index == 0:
                 flag = True
@@ -59,7 +61,7 @@ class Client:
                 print('sshkey error')
         elif self._password != "":
             _proc = pexpect.spawn('svn', ['list', '--xml', self.get_url()])
-            _index = _proc.expect(['<entry', 'password', pexpect.EOF, pexpect.TIMEOUT])
+            _index = _proc.expect(['<entry', 'password', pexpect.EOF, pexpect.TIMEOUT], timeout=self._timeout)
             # print(_proc.before)
             if _index == 0:
                 flag = True
@@ -67,7 +69,7 @@ class Client:
             elif _index == 1:
                 _proc.sendline(self._password)
                 _subindex = _proc.expect(['<entry', 'svn: E170013: Unable to connect to a repository at URL',
-                                          pexpect.EOF, pexpect.TIMEOUT])
+                                          pexpect.EOF, pexpect.TIMEOUT], timeout=self._timeout)
                 if _subindex == 0:
                     flag = True
                     print('ok')
@@ -89,10 +91,10 @@ class Client:
             _xml = self._run_command('svn ls --xml', path).strip()
         elif self._password != "":
             _proc = pexpect.spawn('svn', ['list', '--xml', path])
-            _index = _proc.expect(['password', pexpect.EOF, pexpect.TIMEOUT])
+            _index = _proc.expect(['password', pexpect.EOF, pexpect.TIMEOUT], timeout=self._timeout)
             if _index == 0:
                 _proc.sendline(self._password)
-                _subindex = _proc.expect(['</lists>', pexpect.EOF, pexpect.TIMEOUT])
+                _subindex = _proc.expect(['</lists>', pexpect.EOF, pexpect.TIMEOUT], timeout=self._timeout)
                 if _subindex == 0:
                     _xml = '<list>' + _proc.before.decode('utf-8').lstrip(':').strip()
                 else:

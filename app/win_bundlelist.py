@@ -1,8 +1,9 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QListWidgetItem
-from PyQt5.QtWidgets import QMenu, QAction, QMessageBox
+from PyQt5.QtWidgets import QMenu, QMessageBox
 from PyQt5.QtGui import QFont, QColor
 
 from . import db_bundlelist
+from .utils import menu_action
 
 
 class BundleItem(QWidget):
@@ -24,14 +25,6 @@ class BundleItem(QWidget):
     def set_text(self, alias, url):
         self.text_alias.setText(alias)
         self.text_url.setText(url)
-
-
-def menu_action(txt, func, tip=None):
-    action = QAction(txt)
-    action.triggered.connect(func)
-    if tip:
-        action.setStatusTip(tip)
-    return action
 
 
 def setup_ui_bundle(self):
@@ -125,11 +118,11 @@ def event_listwidget_repos_menu_refresh(self):
 
 
 def event_listwidget_repos_right_click(self, pos):
-    indices = self.ui.listWidget_repos.selectedIndexes()
     menu = QMenu()
     act_add = menu_action('Add', self.event_listwidget_repos_menu_add)
     menu.addAction(act_add)
 
+    indices = self.ui.listWidget_repos.selectedIndexes()
     if len(indices) > 0:
         act_edit = menu_action('Edit', self.event_listwidget_repos_menu_edit)
         act_delete = menu_action('Delete', self.event_listwidget_repos_menu_delete)

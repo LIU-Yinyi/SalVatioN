@@ -32,7 +32,11 @@ class Salvation(QMainWindow, app.App):
         self.ui.pushButton_loadKey.clicked.connect(self.event_button_load_sshkey)
         self.ui.lineEdit_address.textChanged.connect(self.event_lineedit_address_onchange)
         # win_remotesvn
-        self.ui.treeView_remoteSvn.clicked.connect(self.event_remotesvn_treeview_left_click)
+        self.ui.treeView_remoteSvn.setExpandsOnDoubleClick(False)  # avoid expanding twice
+        self.ui.treeView_remoteSvn.mousePressEvent = self.event_remotesvn_treeview_left_click
+        self.ui.treeView_remoteSvn.mouseDoubleClickEvent = self.event_remotesvn_treeview_left_double_click
+        self.ui.treeView_remoteSvn.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.ui.treeView_remoteSvn.customContextMenuRequested.connect(self.event_remotesvn_treeview_right_click)
 
 
 if __name__ == '__main__':

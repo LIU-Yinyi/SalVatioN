@@ -2,7 +2,10 @@ import re
 from enum import IntEnum
 from PyQt5.Qt import QStandardItem, QStandardItemModel
 from PyQt5.QtGui import QFont, QColor
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QEvent
+from PyQt5.QtWidgets import QMenu
+
+from .utils import menu_action
 
 
 class ModelColumn(IntEnum):
@@ -54,7 +57,108 @@ def event_remotesvn_treeview_render(self):
     self.ui.treeView_remoteSvn.expandAll()
 
 
-def event_remotesvn_treeview_left_click(self, current_index):
+def event_remotesvn_treeview_menu_list(self):
+    indices = self.ui.treeView_remoteSvn.selectedIndexes()
+    if len(indices) > 0:
+        _index = indices[0]
+        pivot = _index.sibling(_index.row(), 0)
+        event_remotesvn_treeview_update_subdir(self, pivot)
+
+
+def event_remotesvn_treeview_menu_mkdir(self):
+    pass
+
+
+def event_remotesvn_treeview_menu_checkout(self):
+    pass
+
+
+def event_remotesvn_treeview_menu_delete(self):
+    pass
+
+
+def event_remotesvn_treeview_menu_rename(self):
+    pass
+
+
+def event_remotesvn_treeview_menu_move(self):
+    pass
+
+
+def event_remotesvn_treeview_menu_find(self):
+    pass
+
+
+def event_remotesvn_treeview_menu_expand(self):
+    pass
+
+
+def event_remotesvn_treeview_menu_refresh(self):
+    event_remotesvn_model_refresh(self)
+
+
+def event_remotesvn_treeview_right_click(self, pos):
+    menu = QMenu()
+    indices = self.ui.treeView_remoteSvn.selectedIndexes()
+    if len(indices) > 0:
+        act_list = menu_action('List', self.event_remotesvn_treeview_menu_list)
+        act_mkdir = menu_action('MakeDir', self.event_remotesvn_treeview_menu_mkdir)
+        act_checkout = menu_action('Checkout', self.event_remotesvn_treeview_menu_checkout)
+        act_delete = menu_action('Delete', self.event_remotesvn_treeview_menu_delete)
+        act_rename = menu_action('Rename', self.event_remotesvn_treeview_menu_rename)
+        act_move = menu_action('MoveTo', self.event_remotesvn_treeview_menu_move)
+        act_find = menu_action('Find', self.event_remotesvn_treeview_menu_find)
+
+        menu.addAction(act_list)
+        menu.addAction(act_mkdir)
+        menu.addAction(act_checkout)
+        menu.addAction(act_delete)
+        menu.addSeparator()
+        menu.addAction(act_rename)
+        menu.addAction(act_move)
+        menu.addSeparator()
+        menu.addAction(act_find)
+
+        submenu_expand = QMenu('Expand')
+        act_expand_current = menu_action('Current Dir', self.event_remotesvn_treeview_menu_expand)
+        act_expand_recursive = menu_action('Current Dir Recursively', self.event_remotesvn_treeview_menu_expand)
+        act_expand_all = menu_action('All Dir', self.event_remotesvn_treeview_menu_expand)
+        act_expand_all_recursive = menu_action('All Dir Recursively', self.event_remotesvn_treeview_menu_expand)
+
+        submenu_expand.addAction(act_expand_current)
+        submenu_expand.addAction(act_expand_recursive)
+        submenu_expand.addAction(act_expand_all)
+        submenu_expand.addAction(act_expand_all_recursive)
+        menu.addMenu(submenu_expand)
+
+    act_refresh = menu_action('Refresh', self.event_remotesvn_treeview_menu_refresh)
+    menu.addSeparator()
+    menu.addAction(act_refresh)
+
+    menu.exec_(self.ui.treeView_remoteSvn.viewport().mapToGlobal(pos))
+
+
+def event_remotesvn_treeview_left_click(self, event):
+    _index = self.ui.treeView_remoteSvn.indexAt(event.pos())
+    if _index.isValid():
+        self.ui.treeView_remoteSvn.setCurrentIndex(_index)
+        # pivot = _index.sibling(_index.row(), 0)
+        if self.ui.treeView_remoteSvn.isExpanded(_index):
+            self.ui.treeView_remoteSvn.collapse(_index)
+        else:
+            self.ui.treeView_remoteSvn.expand(_index)
+    else:
+        self.ui.treeView_remoteSvn.clearSelection()
+
+
+def event_remotesvn_treeview_left_double_click(self, event):
+    _index = self.ui.treeView_remoteSvn.indexAt(event.pos())
+    if _index.isValid():
+        current_index = _index.sibling(_index.row(), 0)
+        event_remotesvn_treeview_update_subdir(self, current_index)
+
+
+def event_remotesvn_treeview_update_subdir(self, current_index):
     if func_model_get_filename(current_index).endswith('/'):
         func_model_clear_row(self.remotesvn_mdl, current_index)
         for item in self.svn.list(func_model_get_fullpath(current_index)):
