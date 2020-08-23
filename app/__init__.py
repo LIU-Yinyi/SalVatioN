@@ -1,6 +1,7 @@
 from . import svn
 from .win_remotesvn import func_model_create
 
+
 class App:
     def __init__(self):
         self._version_ = '0.1.0'
