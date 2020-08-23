@@ -15,10 +15,11 @@ class Salvation(QMainWindow, app.App):
         self.register_ui_event()
 
     def setup_ui(self):
-        self.ui.statusbar.showMessage("[Welcome] Powered by LIU-Yinyi :D")
+        self.setup_ui_statusbar()
         self.setup_ui_bundle()
         self.setup_ui_repoconfig()
         self.setup_ui_remotesvn()
+        self.ui.statusbar.showMessage("[Welcome] Powered by LIU-Yinyi :D")
 
     def register_ui_event(self):
         # win_bundlelist

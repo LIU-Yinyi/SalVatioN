@@ -3,8 +3,11 @@ from .win_remotesvn import func_model_create
 
 class App:
     def __init__(self):
+        self._version_ = '0.1.0'
         self.bundle_db = None
         self.remotesvn_mdl = func_model_create()
+
+    from .win_statusbar import setup_ui_statusbar, event_button_about_click
 
     from .win_bundlelist import setup_ui_bundle, \
         event_listwidget_repos_right_click, event_listwidget_repos_left_click, \
