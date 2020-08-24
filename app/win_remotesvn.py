@@ -120,9 +120,9 @@ def event_remotesvn_treeview_right_click(self, pos):
         menu.addAction(act_find)
 
         submenu_expand = QMenu('Expand')
-        act_expand_current = menu_action('Current Dir', self.event_remotesvn_treeview_menu_expand)
+        act_expand_current = menu_action('Current Directory', self.event_remotesvn_treeview_menu_expand)
         act_expand_recursive = menu_action('Current Dir Recursively', self.event_remotesvn_treeview_menu_expand)
-        act_expand_all = menu_action('All Dir', self.event_remotesvn_treeview_menu_expand)
+        act_expand_all = menu_action('All Directories', self.event_remotesvn_treeview_menu_expand)
         act_expand_all_recursive = menu_action('All Dir Recursively', self.event_remotesvn_treeview_menu_expand)
 
         submenu_expand.addAction(act_expand_current)

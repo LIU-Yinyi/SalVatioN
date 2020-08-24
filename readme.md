@@ -1,13 +1,13 @@
 # SalVatioN
 - **Author:** LIU-Yinyi
 - **Date:** Aug 24, 2020
-- **Version:** 0.1.0
-- **Abstract:** An open-source subversion gui desktop software based on PyQt5.
+- **Version:** 0.1.0 - Beta & Hung Up
+- **Abstract:** An open-source subversion gui client desktop software based on PyQt5. Note: See also the announcements in the last section.
 
 ## Motivations
 Why I started this project was an interesting episode.
 
-> This project was originally for Yinyi's Macbook because at that time MacOSX Catalina didn't have relevant softwares that could support free subversion desktop version. But the lab duty required svn so I wrote a gui version as *SALVATION*. It happened that the word **salvation** has the letter **svn**, as a result, I named the software as this name. :D
+> This project was originally for Yinyi's Macbook because at that time MacOSX Catalina didn't have relevant softwares that could support free subversion client desktop version. But the lab duty required svn so I wrote a gui version as *SALVATION*. It happened that the word **salvation** has the letter **svn**, as a result, I named the software as this name. :D
 
 
 ## Quickstarts
@@ -32,9 +32,10 @@ Download the compiled packages in Release with selecting the corresponding OS.
 
 
 ## Usages
-The gui of software was designed as simple as possible, while it didn't miss any essential elements.
+The gui of software was designed as simple as possible.
   
-> <u>The *philosophy* is that find the potenials with your **mouse-click**</u>, both `single/double left click` as well as `right click`.
+> <u>The *philosophy* is that find the potenials with your **mouse-click**</u>,     
+> both `single/double left click` as well as `right click`.
 
 The gif will be shown in the following parts.
 
@@ -61,3 +62,11 @@ This part shows you how to manage with version control.
 
 ## Acknowledges
 SalVatioN is powered by @LIU-Yinyi (C) 2020
+
+## Announcements
+I found that SalVatioN just covered what I needed within our lab duties, while it still lacks a lot of features that svn once designed. Also I just persuaded my professor replaced svn with git + onedrive. Nothing would bother me :D
+
+As a result, the priority of maintaining this project is no longer high. But I will optimize it if I have spare time in the future. Anyway, coding for SalVatioN helped me startup on Qt5. If you would like to use `svn+ssh` method to have a glance on svn repository, the functions have already covered. Now it lacks of the abilities of local submissions as well as version control.
+
+Thanks for reviewing my awkward codes :D
+

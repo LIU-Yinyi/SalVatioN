@@ -5,7 +5,8 @@ from . import db_bundlelist
 
 
 def setup_ui_repoconfig(self):
-    self.ui.comboBox_logo.addItem('Default')
+    self.ui.comboBox_method.addItems(['file', 'http', 'https', 'svn', 'svn+ssh'])
+    self.ui.comboBox_method.setCurrentIndex(4)
     self.ui.checkBox_configssh.setChecked(False)
 
 
