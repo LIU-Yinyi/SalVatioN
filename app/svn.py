@@ -134,6 +134,24 @@ class Client:
             print(ex)
         return res
 
-    def mkdir(self, rel_path=""):
+    def mkdir(self, rel_path):
         path = self.get_url() + '/' + rel_path
         return self._run_command('svn mkdir', path)
+
+    def checkout(self, rel_path, save_path):
+        if not os.path.isdir(save_path):
+            os.mkdir(save_path)
+        path = self.get_url() + '/' + rel_path
+        if self._sshkey != "":
+            _ret = self._run_command('svn checkout {} {}'.format(path, save_path))
+        elif self._password != "":
+            _proc = pexpect.spawn('svn', ['checkout', path, save_path])
+            _index = _proc.expect(["password", pexpect.EOF, pexpect.TIMEOUT], timeout=self._timeout)
+            if _index == 0:
+                _proc.sendline(self._password)
+                _ret = _proc.before
+            else:
+                _ret = None
+        else:
+            _ret = None
+        return _ret

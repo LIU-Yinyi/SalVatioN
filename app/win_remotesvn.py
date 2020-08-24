@@ -3,7 +3,8 @@ from enum import IntEnum
 from PyQt5.Qt import QStandardItem, QStandardItemModel
 from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtCore import Qt, QEvent
-from PyQt5.QtWidgets import QMenu
+from PyQt5.QtWidgets import QMenu, QFileDialog, QMessageBox
+from pathlib import Path
 
 from .utils import menu_action
 
@@ -70,7 +71,37 @@ def event_remotesvn_treeview_menu_mkdir(self):
 
 
 def event_remotesvn_treeview_menu_checkout(self):
-    pass
+    indices = self.ui.treeView_remoteSvn.selectedIndexes()
+    if len(indices) > 0:
+        _index = indices[0]
+        _path = func_model_get_fullpath(_index)
+
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
+        savedir = QFileDialog.getExistingDirectory(self, "Select Checkout Directory",
+                                                   "{}".format(Path.home()), options=options)
+        if savedir:
+            file_last_name = _index.data()
+            if not file_last_name.endswith('/'):
+                file_last_name = _index.parent().data()
+            file_last_name = file_last_name.replace(r' ', r'\ ')
+            reply = QMessageBox.question(self, "Confirm Checkout",
+                                         "[REMOTE] From: {}\n[LOCAL] To: {}\n\n"
+                                         "Press <Yes> to confirm with adding dir name\n"
+                                         "Press <No> to confirm without adding dir name\n"
+                                         "Press <Cancel> to Cancel the checkout operation\n\n"
+                                         "DirNameWillAdd: {}"
+                                         "".format(self.svn.get_url() + '/' + _path, savedir, file_last_name),
+                                         QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
+            if reply == QMessageBox.Cancel:
+                self.ui.statusbar.showMessage("[Info] Checkout canceled.", 5000)
+            else:
+                if reply == QMessageBox.Yes:
+                    savedir += '/' + file_last_name
+                _prompt = self.svn.checkout(rel_path=_path, save_path=savedir)
+                # if _prompt:
+                #    print(_prompt)
+                self.ui.statusbar.showMessage("[Info] Checkout done.", 5000)
 
 
 def event_remotesvn_treeview_menu_delete(self):
